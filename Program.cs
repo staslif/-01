@@ -17,10 +17,9 @@ class Account
         {
             balance += amount;
             Console.WriteLine($"Пополнение: {amount}. Текущий баланс: {balance}");
-            Monitor.PulseAll(balanceLock); // Уведомляем ожидающие потоки
+            Monitor.PulseAll(balanceLock); // Ожидающие потоки
         }
     }
-
     public void Withdraw(decimal amount)
     {
         lock (balanceLock)
@@ -43,7 +42,6 @@ class Account
         }
     }
 }
-
 class Program
 {
     static void Main(string[] args)
@@ -56,32 +54,29 @@ class Program
         {
             while (true)
             {
-                decimal amount = random.Next(10, 100); // 
+                decimal amount = random.Next(10, 100); // Сумма снятия
                 account.Deposit(amount);
-                Thread.Sleep(random.Next(500, 2000)); // Задержка между пополнениями
+                Thread.Sleep(random.Next(500, 2000)); // Задержка
             }
         });
 
         depositThread.Start();
-
         // Снятие денег
         Thread withdrawThread = new Thread(() =>
         {
             while (true)
             {
-                decimal amountToWithdraw = random.Next(50, 150); // Сумма для снятия
+                decimal amountToWithdraw = random.Next(50, 150); // Сумма снятия
                 account.Withdraw(amountToWithdraw);
-                Thread.Sleep(random.Next(1000, 3000)); // Задержка между снятиями
+                Thread.Sleep(random.Next(1000, 3000)); // Задержка
             }
         });
-
         withdrawThread.Start();
-
-        // Вывода остатка на балансе
+        // Вывода остатка 
         while (true)
         {
             Console.WriteLine($"Текущий баланс: {account.GetBalance()}");
-            Thread.Sleep(2000); // Задержка для вывода баланса
+            Thread.Sleep(2000); // Задержка
         }
     }
 }
